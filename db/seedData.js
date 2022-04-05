@@ -6,6 +6,8 @@ const {
   getRoutinesWithoutActivities,
   getAllActivities,
   addActivityToRoutine,
+  getUser,
+  getUserById,
 } = require('./');
 const client = require('./client');
 
