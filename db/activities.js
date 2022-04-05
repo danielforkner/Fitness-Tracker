@@ -1,7 +1,7 @@
 const client = require('./client');
 
 async function createActivity({ name, description }) {
-  const { rows } = await client.query(
+  const { rows : [activity] } = await client.query(
     `
     INSERT INTO activities (name, description)
     VALUES ($1, $2)
@@ -10,7 +10,7 @@ async function createActivity({ name, description }) {
     [name, description]
   );
 
-  return rows;
+  return activity;
 }
 
 async function getAllActivities() {
@@ -21,4 +21,22 @@ async function getAllActivities() {
   return rows;
 }
 
-module.exports = { createActivity, getAllActivities };
+
+async function updateActivity({ id, name, description }) {
+  const { rows: [activities] } = await client.query(`
+    UPDATE activities 
+    SET name=$2, description=$3
+    WHERE id=$1
+    RETURNING *;
+    `,
+    [id, name, description]
+    );
+
+  return activities;
+}
+
+module.exports = { 
+  createActivity, 
+  getAllActivities,
+  updateActivity
+};
