@@ -21,4 +21,17 @@ async function getRoutinesWithoutActivities() {
   return rows;
 }
 
-module.exports = { createRoutine, getRoutinesWithoutActivities };
+// include activities
+async function getAllRoutines() {
+  const { rows } = await client.query(`
+      SELECT routines.name FROM routines;
+      `);
+
+  return rows;
+}
+
+module.exports = {
+  createRoutine,
+  getRoutinesWithoutActivities,
+  getAllRoutines,
+};
