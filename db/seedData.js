@@ -7,9 +7,10 @@ async function dropTables() {
   // drop all tables, in the correct order
   try {
     await client.query(`
+    DROP TABLE IF EXISTS routine_activities;
+    DROP TABLE IF EXISTS routines;
     DROP TABLE IF EXISTS users;
     DROP TABLE IF EXISTS activities;
-    DROP TABLE IF EXISTS routines;
   `);
   } catch (error) {
     console.error("Error dropping tables!");
@@ -24,21 +25,32 @@ async function createTables() {
     await client.query(`
     CREATE TABLE users (
       id SERIAL PRIMARY KEY,
-      username varchar(255) UNIQUE NOT NULL,
-      password varchar(255) NOT NULL
+      username VARCHAR(255) UNIQUE NOT NULL,
+      password VARCHAR(255) NOT NULL
     );
     CREATE TABLE activities (
       id SERIAL PRIMARY KEY,
-      name varchar(255) UNIQUE NOT NULL,
-      description text NOT NULL
+      name VARCHAR(255) UNIQUE NOT NULL,
+      description TEXT NOT NULL
     );
     CREATE TABLE routines (
       id SERIAL PRIMARY KEY,
-      "creatorId" INTEGER FOREIGN KEY references users(id),
+      "creatorId" INTEGER,
       "isPublic" BOOLEAN DEFAULT false,
-      name varchar(255) UNIQUE NOT NULL,
-      goal text NOT NULL
+      name VARCHAR(255) UNIQUE NOT NULL,
+      goal TEXT NOT NULL,
+      FOREIGN KEY ("creatorId") REFERENCES users(id)
     );
+    CREATE TABLE routine_activites (
+      id SERIAL PRIMARY KEY,
+      "routineId" INTEGER,
+      "activityId" INTEGER,
+      duration INTEGER,
+      count INTEGER,
+      FOREIGN KEY ("routineId") REFERENCES routines(id),
+      FOREIGN KEY ("activityId") REFERENCES activities(id)
+    );
+
   `);
   } catch (error) {
     console.error("Error building tables!");
