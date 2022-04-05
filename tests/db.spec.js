@@ -95,7 +95,7 @@ describe('Database', () => {
       });
     });
   });
-  describe('Activities', () => {
+  xdescribe('Activities', () => {
     describe('getAllActivities', () => {
       it('selects and returns an array of all activities', async () => {
         const activities = await getAllActivities();
@@ -125,7 +125,7 @@ describe('Database', () => {
       });
     });
   });
-  xdescribe('Routines', () => {
+  describe('Routines', () => {
     let routineToCreateAndUpdate;
     describe('getActivityById', () => {
       it('gets activities by their id', async () => {
