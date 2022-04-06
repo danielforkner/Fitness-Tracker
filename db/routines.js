@@ -1,4 +1,5 @@
 const client = require('./client');
+const { mapRoutines } = require('./utils');
 
 async function createRoutine({ creatorId, isPublic, name, goal }) {
   const { rows } = await client.query(
@@ -21,13 +22,22 @@ async function getRoutinesWithoutActivities() {
   return rows;
 }
 
-// include activities
+// you may get errors in the query where "creatorId"
+// is unspecified or something like that
 async function getAllRoutines() {
   const { rows } = await client.query(`
-      SELECT routines.name FROM routines;
+  select
+  routines.id, "creatorId", "isPublic", routines.name, goal,
+  routine_activities."routineId", routine_activities."activityId", duration, routine_activities.count,
+  activities.name as "activityName", activities.description,
+  users.username as "creatorName"
+  from routines
+  left join routine_activities on routine_activities."routineId" = routines.id
+  left join activities on activities.id  = routine_activities."routineId"
+  left join users on users.id = routines."creatorId";
       `);
 
-  return rows;
+  return mapRoutines(rows);
 }
 
 module.exports = {
