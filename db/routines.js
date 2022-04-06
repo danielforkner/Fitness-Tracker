@@ -2,7 +2,9 @@ const client = require('./client');
 const { mapRoutines } = require('./utils');
 
 async function createRoutine({ creatorId, isPublic, name, goal }) {
-  const { rows } = await client.query(
+  const {
+    rows: [routine],
+  } = await client.query(
     `
     INSERT INTO routines ("creatorId", "isPublic", name, goal)
     VALUES ($1, $2, $3, $4)
@@ -10,23 +12,84 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
     `,
     [creatorId, isPublic, name, goal]
   );
-
-  return rows;
+  return routine;
 }
 
 async function getRoutineById(id) {
   try {
-    const { rows } = await client.query(
+    const {
+      rows: [routine],
+    } = await client.query(
       `
     SELECT * FROM routines
     WHERE routines.id = $1
     `,
       [id]
     );
-    console.log(rows);
-    return rows;
+    return routine;
   } catch (error) {
     console.error('error in getRoutineById from routines.js');
+    throw error;
+  }
+}
+
+async function updateRoutine({ id, isPublic, name, goal }) {
+  try {
+    const {
+      rows: [routine],
+    } = await client.query(
+      `
+    UPDATE routines SET 
+      "isPublic"=COALESCE($2, routines."isPublic"),
+      name=COALESCE($3, name),
+      goal=COALESCE($4, goal)
+    WHERE routines.id=$1
+    RETURNING *;
+    `,
+      [id, isPublic, name, goal]
+    );
+    return routine;
+  } catch (error) {
+    console.error('error in updateRoutine from routines.js');
+    throw error;
+  }
+}
+
+async function getRoutineActivitiesByRoutine(routine) {
+  try {
+    const { rows } = await client.query(
+      `
+    SELECT * 
+    FROM routine_activities
+    WHERE routine_activities."routineId"=$1;
+    `,
+      [routine.id]
+    );
+    return rows;
+  } catch (error) {
+    console.error('error in getRoutineActivitiesByRoutine from routines.js');
+    throw error;
+  }
+}
+
+async function destroyRoutine(id) {
+  try {
+    await client.query(
+      `
+    DELETE FROM routines 
+      WHERE routines.id=$1;
+    `,
+      [id]
+    );
+    await client.query(
+      `
+    DELETE FROM routine_activities 
+      WHERE routine_activities."routineId"=$1;
+    `,
+      [id]
+    );
+  } catch (error) {
+    console.error('error in updateRoutine from routines.js');
     throw error;
   }
 }
@@ -127,10 +190,13 @@ async function getPublicRoutinesByActivity(activity) {
 module.exports = {
   createRoutine,
   getRoutineById,
+  updateRoutine,
+  destroyRoutine,
   getRoutinesWithoutActivities,
   getAllRoutines,
   getAllPublicRoutines,
   getAllRoutinesByUser,
   getPublicRoutinesByUser,
   getPublicRoutinesByActivity,
+  getRoutineActivitiesByRoutine,
 };
