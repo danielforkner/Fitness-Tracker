@@ -9,14 +9,20 @@ const {
 const { addActivityToRoutine } = require('./routine_activities');
 const {
   createRoutine,
+  getRoutineById,
   getRoutinesWithoutActivities,
   getAllRoutines,
+  getAllPublicRoutines,
+  getAllRoutinesByUser,
+  getPublicRoutinesByUser,
+  getPublicRoutinesByActivity,
 } = require('./routines');
 
 module.exports = {
   createUser,
   createActivity,
   createRoutine,
+  getRoutineById,
   getRoutinesWithoutActivities,
   getAllActivities,
   addActivityToRoutine,
@@ -25,4 +31,8 @@ module.exports = {
   updateActivity,
   getActivityById,
   getAllRoutines,
+  getAllPublicRoutines,
+  getAllRoutinesByUser,
+  getPublicRoutinesByUser,
+  getPublicRoutinesByActivity,
 };

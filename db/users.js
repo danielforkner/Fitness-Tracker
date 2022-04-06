@@ -31,19 +31,19 @@ async function getUser({ username, password }) {
   return user;
 }
 
-async function getUserById( id ) {
+async function getUserById(id) {
   const {
-    rows,
+    rows: [user],
   } = await client.query(
     `
-    SELECT username
+    SELECT *
     FROM users
     WHERE id=$1;
     `,
     [id]
   );
 
-  return rows;
+  return user;
 }
 
 module.exports = {
