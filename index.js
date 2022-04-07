@@ -1,5 +1,5 @@
 // create the express server here
-require("dotenv").config();
+require('dotenv').config();
 
 const PORT = 3000;
 
