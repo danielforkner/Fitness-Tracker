@@ -5,18 +5,26 @@ const { createUser, getUserByName } = require('../db');
 usersRouter.post('/register', async (req, res, next) => {
   const { username, password } = req.body;
   try {
-    const _user = await getUserByName({ username });
+    // check password length
+    if (password.length < 8) {
+      next({
+        name: 'password error',
+        message: 'password must be 8 characters or longer',
+      });
+    }
 
+    // check for duplicate user
+    const _user = await getUserByName({ username });
     if (_user) {
       next({
         name: 'UserExistsError',
         message: 'Username is taken, try again',
       });
-    } else {
-      const user = await createUser({ username, password });
-      console.log(user, 'USER');
-      res.send({ user: user });
     }
+
+    const user = await createUser({ username, password });
+    console.log(user, 'USER');
+    res.send({ user: user });
   } catch ({ name, message }) {
     next({ name, message });
   }
