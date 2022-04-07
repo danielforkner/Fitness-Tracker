@@ -13,11 +13,10 @@ async function createUser({ username, password }) {
       `,
       [username, password]
     );
-  
-    return user;
 
+    return user;
   } catch (error) {
-    throw error
+    throw error;
   }
 }
 
@@ -31,6 +30,21 @@ async function getUser({ username, password }) {
     WHERE username=$1 AND password=$2;
     `,
     [username, password]
+  );
+
+  return user;
+}
+
+async function getUserByName({ username }) {
+  const {
+    rows: [user],
+  } = await client.query(
+    `
+    SELECT username
+    FROM users
+    WHERE username=$1;
+    `,
+    [username]
   );
 
   return user;
@@ -55,4 +69,5 @@ module.exports = {
   createUser,
   getUser,
   getUserById,
+  getUserByName,
 };
