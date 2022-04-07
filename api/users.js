@@ -1,13 +1,12 @@
 const express = require('express');
 const usersRouter = express.Router();
-const { createUser, getUserByName } = require('../db');
+const { createUser, getUserByName, getPublicRoutinesByUser } = require('../db');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
 
 usersRouter.use(async (req, res, next) => {
     const prefix = `Bearer `;
     const auth = req.header('Authorization');
-    console.log('ln 10 of users.js, auth header:', auth);
 
     if (!auth) {
         next();
@@ -15,10 +14,8 @@ usersRouter.use(async (req, res, next) => {
 
     } else if (auth.startsWith(prefix)) {
         const token = auth.slice(prefix.length);
-        console.log(token)
         try {
-            const { username } = jwt.verify(token, JWT_SECRET);
-            console.log(username);
+            const { username } = jwt.verify(token, JWT_SECRET)
 
             if (username) {
                 req.user = await getUserByName({ username });
@@ -38,6 +35,16 @@ usersRouter.use(async (req, res, next) => {
         });
     }
 });
+
+usersRouter.get("/:username/routines", async (req, res, next) => {
+    try {
+        const username = req.params.username
+        const routines = await getPublicRoutinesByUser({ username })
+        res.send(routines)
+    } catch (error) {
+        
+    }
+})
 
 usersRouter.get('/me', async (req, res, next) => {
     try {
@@ -94,18 +101,17 @@ usersRouter.post('/login', async (req, res, next) => {
 
 usersRouter.post('/register', async (req, res, next) => {
     const { username, password } = req.body;
+    const _user = await getUserByName({ username });
     try {
         // check password length
         if (password.length < 8) {
             res.status(401);
             next({
-                name: 'password error',
-                message: 'password must be 8 characters or longer',
+                name: 'Password Error',
+                message: 'Password must be at least 8 characters',
             });
         }
-
         // check for duplicate user
-        const _user = await getUserByName({ username });
         if (_user) {
             res.status(401);
             next({
@@ -114,7 +120,6 @@ usersRouter.post('/register', async (req, res, next) => {
             });
         } else {
             const user = await createUser({ username, password });
-            console.log(user, 'USER');
             res.send({ user });
         }
     } catch ({ name, message }) {
