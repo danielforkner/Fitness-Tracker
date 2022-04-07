@@ -89,7 +89,7 @@ async function destroyRoutine(id) {
       [id]
     );
   } catch (error) {
-    console.error('error in updateRoutine from routines.js');
+    console.error('error in destroyRoutine from routines.js');
     throw error;
   }
 }

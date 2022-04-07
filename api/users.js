@@ -1,21 +1,33 @@
-const express = require("express")
-const usersRouter = express.Router()
-const { createUser } = require("../db")
+const express = require('express');
+const usersRouter = express.Router();
+const { createUser, getUserByName } = require('../db');
 
-usersRouter.post("/register", async (req, res, next) => {
-    const {username, password} = req.body
-    console.log(username)
-    try {
-        const user = await createUser({username, password})
-        res.user = user
-        console.log("inside try")
-        console.log(user, "USER")
-        res.send({message: "Thanks for registering!"})
-        
-    } catch (error) {
-        console.error(error)
+usersRouter.post('/register', async (req, res, next) => {
+  const { username, password } = req.body;
+  try {
+    // check password length
+    if (password.length < 8) {
+      next({
+        name: 'password error',
+        message: 'password must be 8 characters or longer',
+      });
     }
-})
 
+    // check for duplicate user
+    const _user = await getUserByName({ username });
+    if (_user) {
+      next({
+        name: 'UserExistsError',
+        message: 'Username is taken, try again',
+      });
+    }
 
-module.exports = usersRouter
+    const user = await createUser({ username, password });
+    console.log(user, 'USER');
+    res.send({ user: user });
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
+});
+
+module.exports = usersRouter;
