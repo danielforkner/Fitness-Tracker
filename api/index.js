@@ -12,7 +12,7 @@ apiRouter.get('/health', (req, res, next) => {
 apiRouter.use('/users', usersRouter);
 
 apiRouter.use((error, req, res, next) => {
-  res.status(409).send({
+  res.send({
     name: error.name,
     message: error.message,
   });
