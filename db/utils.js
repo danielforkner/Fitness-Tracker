@@ -14,6 +14,7 @@ const mapRoutines = (rows) => {
     }
     if (row.activityId) {
       map[row.id].activities.push({
+        id: row.activityId,
         name: row.activityName,
         description: row.description,
         duration: row.duration,

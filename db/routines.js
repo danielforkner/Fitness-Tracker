@@ -74,10 +74,13 @@ async function getRoutineActivitiesByRoutine(routine) {
 
 async function destroyRoutine(id) {
   try {
-    await client.query(
+    const {
+      rows: [deleted],
+    } = await client.query(
       `
     DELETE FROM routines 
-      WHERE routines.id=$1;
+      WHERE routines.id=$1
+      RETURNING *;
     `,
       [id]
     );
@@ -88,6 +91,7 @@ async function destroyRoutine(id) {
     `,
       [id]
     );
+    return deleted;
   } catch (error) {
     console.error('error in destroyRoutine from routines.js');
     throw error;
@@ -157,7 +161,6 @@ async function getPublicRoutinesByUser({ username }) {
       return routine.isPublic;
     });
     return filtered;
-
   } catch (error) {
     console.error('error in getPublicRoutinesByUser from routines.js');
     throw error;
