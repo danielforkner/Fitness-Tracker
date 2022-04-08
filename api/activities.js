@@ -7,12 +7,14 @@ activitiesRouter.get('/', async (req, res, next) => {
         const activities = await getAllActivities()
         if (activities) {
             res.send(activities)
-        }
-        res.status(409)
-        next ({
+        } else {
+            res.status(409)
+            next ({
             name: "Activities Error",
             message: "Can't get activities!",
         });
+        }
+        
     } catch ({ name, message }) {
         next({ name, message });
     } 
@@ -20,7 +22,7 @@ activitiesRouter.get('/', async (req, res, next) => {
 
 activitiesRouter.post('/', async (req, res, next) => {
     const { name, description } = req.body
-    console.log(name)
+    console.log("THIS IS IN THE POST FUNCTION")
     try {
         const newActivity = await createActivity({ name, description })
         res.send (newActivity)
@@ -28,6 +30,10 @@ activitiesRouter.post('/', async (req, res, next) => {
     } catch ({ name, message }) {
         next({ name, message });
     } 
+})
+
+activitiesRouter.patch('/:activityId', async (req, res, next) => {
+    
 })
 
 module.exports = activitiesRouter
