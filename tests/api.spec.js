@@ -44,7 +44,7 @@ describe('API', () => {
     expect(typeof res.data.message).toEqual('string');
   });
 
-  describe('Users', () => {
+  xdescribe('Users', () => {
     let newUser = { username: 'robert', password: 'bobbylong321' };
     let newUserShortPassword = { username: 'robertShort', password: 'bobby21' };
     describe('POST /users/register', () => {
@@ -152,7 +152,7 @@ describe('API', () => {
       });
     });
   });
-  xdescribe('Activities', () => {
+  describe('Activities', () => {
     let activityToCreateAndUpdate = {
       name: 'Bicep Curls',
       description: 'They hurt, but you will thank you later',

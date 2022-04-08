@@ -150,12 +150,14 @@ async function getAllRoutinesByUser(user) {
   }
 }
 
-async function getPublicRoutinesByUser(user) {
+async function getPublicRoutinesByUser({ username }) {
   try {
-    let all = await getAllRoutinesByUser(user);
-    return all.filter((routine, i) => {
+    let all = await getAllRoutinesByUser({ username });
+    const filtered = all.filter((routine, i) => {
       return routine.isPublic;
     });
+    return filtered;
+
   } catch (error) {
     console.error('error in getPublicRoutinesByUser from routines.js');
     throw error;
