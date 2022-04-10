@@ -2,12 +2,12 @@ const express = require('express');
 const usersRouter = express.Router();
 const { createUser, getUserByName, getPublicRoutinesByUser } = require('../db');
 const jwt = require('jsonwebtoken');
+const { checkHash } = require('../db/users');
 const { JWT_SECRET } = process.env;
 
 usersRouter.use(async (req, res, next) => {
   const prefix = `Bearer `;
   const auth = req.header('Authorization');
-
   if (!auth) {
     next();
   } else if (auth.startsWith(prefix)) {
@@ -39,7 +39,9 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
     const username = req.params.username;
     const routines = await getPublicRoutinesByUser({ username });
     res.send(routines);
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 });
 
 usersRouter.get('/me', async (req, res, next) => {
@@ -61,7 +63,6 @@ usersRouter.get('/me', async (req, res, next) => {
 
 usersRouter.post('/login', async (req, res, next) => {
   const { username, password } = req.body;
-
   // request must have both
   if (!username || !password) {
     next({
@@ -71,9 +72,10 @@ usersRouter.post('/login', async (req, res, next) => {
   }
 
   try {
-    console.log(username);
     const user = await getUserByName({ username });
-    if (user && user.password == password) {
+
+    if (user && checkHash(password, user.password)) {
+      // CHECK HASH
       const token = jwt.sign(
         { id: user.id, username: username },
         process.env.JWT_SECRET,
