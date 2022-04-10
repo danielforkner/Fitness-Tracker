@@ -25,7 +25,7 @@ async function getAllActivities() {
 
 async function updateActivity({ id, name, description }) {
   const {
-    rows: [activities],
+    rows: [activity],
   } = await client.query(
     `
     UPDATE activities 
@@ -36,7 +36,7 @@ async function updateActivity({ id, name, description }) {
     [id, name, description]
   );
 
-  return activities;
+  return activity;
 }
 
 async function getActivityById(id) {
