@@ -10,6 +10,7 @@ const {
   addActivityToRoutine,
   updateRoutineActivity,
   destroyRoutineActivity,
+  getRoutineByRoutineActivityId,
 } = require('./routine_activities');
 const {
   createRoutine,
@@ -48,4 +49,5 @@ module.exports = {
   getRoutineActivitiesByRoutine,
   updateRoutineActivity,
   destroyRoutineActivity,
+  getRoutineByRoutineActivityId,
 };

@@ -23,8 +23,25 @@ async function addActivityToRoutine({
     throw error;
   }
 }
+async function getRoutineByRoutineActivityId(id) {
+  try {
+    const {
+      rows: [routineId],
+    } = await client.query(
+      `
+      SELECT routine_activities."routineId"
+      FROM routine_activities
+      WHERE id=$1;
+    `,
+      [id]
+    );
+    return routineId;
+  } catch (error) {
+    throw error;
+  }
+}
 
-async function updateRoutineActivity({ id, count, duration }) {
+async function updateRoutineActivity({ routineActivityId, count, duration }) {
   try {
     const {
       rows: [activity],
@@ -36,7 +53,7 @@ async function updateRoutineActivity({ id, count, duration }) {
     WHERE id=$1
     RETURNING *;
     `,
-      [id, count, duration]
+      [routineActivityId, count, duration]
     );
     return activity;
   } catch (error) {
@@ -68,4 +85,5 @@ module.exports = {
   addActivityToRoutine,
   updateRoutineActivity,
   destroyRoutineActivity,
+  getRoutineByRoutineActivityId,
 };
