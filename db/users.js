@@ -55,7 +55,7 @@ async function getUser({ username, password }) {
       throw error;
     }
   } else {
-    throw err; // bad password
+    return false;
   }
 }
 

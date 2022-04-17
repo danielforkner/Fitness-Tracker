@@ -7,6 +7,7 @@ const {
   updateRoutine,
   destroyRoutine,
   addActivityToRoutine,
+  getRoutineActivitiesByRoutine,
 } = require('../db');
 const routinesRouter = express.Router();
 
@@ -44,16 +45,28 @@ routinesRouter.post('/:routineId/activities', async (req, res, next) => {
   const routineId = req.params.routineId;
   const { activityId, count, duration } = req.body;
   try {
-    const added = await addActivityToRoutine({
-      routineId,
-      activityId,
-      count,
-      duration,
-    });
-    console.log('ADDED', added);
-    res.send(added);
-  } catch (error) {
-    throw error;
+    const routines = await getRoutineActivitiesByRoutine(routineId);
+    const duplicate = routines.some(
+      (routine) => routine.activityId === activityId
+    );
+    if (duplicate) {
+      res.status(409);
+      next({
+        name: 'duplicate error',
+        message: 'you cannot add a duplicate activity to this routine',
+      });
+    } else {
+      const added = await addActivityToRoutine({
+        routineId,
+        activityId,
+        count,
+        duration,
+      });
+      console.log('ADDED', added);
+      res.send(added);
+    }
+  } catch ({ name, message }) {
+    next({ name, message });
   }
 });
 

@@ -332,7 +332,7 @@ describe('API', () => {
       });
     });
   });
-  xdescribe('routine_activities', () => {
+  describe('routine_activities', () => {
     let newRoutineActivityData = {
       routineId: 3,
       activityId: 8,

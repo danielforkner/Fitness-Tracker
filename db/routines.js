@@ -28,7 +28,7 @@ async function getRoutineById(id) {
     );
     return routine;
   } catch (error) {
-    console.error('error in getRoutineById from routines.js');
+    console.error(error);
     throw error;
   }
 }
@@ -56,6 +56,7 @@ async function updateRoutine({ id, isPublic, name, goal }) {
 }
 
 async function getRoutineActivitiesByRoutine(routine) {
+  if (routine.id) routine = routine.id;
   try {
     const { rows } = await client.query(
       `
@@ -63,11 +64,11 @@ async function getRoutineActivitiesByRoutine(routine) {
     FROM routine_activities
     WHERE routine_activities."routineId"=$1;
     `,
-      [routine.id]
+      [routine]
     );
     return rows;
   } catch (error) {
-    console.error('error in getRoutineActivitiesByRoutine from routines.js');
+    console.error(error);
     throw error;
   }
 }
