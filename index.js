@@ -1,16 +1,16 @@
 // create the express server here
 require('dotenv').config();
 
-const PORT = 3000;
+const { PORT = 3000 } = process.env;
 
 const express = require('express');
 const cors = require('cors');
 const app = express();
 const apiRouter = require('./api');
-const morgan = require('morgan')
+const morgan = require('morgan');
 
 app.use(cors());
-app.use(morgan('dev'))
+app.use(morgan('dev'));
 app.use(express.json());
 app.use((req, res, next) => {
   console.log('BODY LOGGER START');

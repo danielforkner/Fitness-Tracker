@@ -62,7 +62,6 @@ routine_activitiesRouter.patch(
           count,
           duration,
         });
-        console.log('UPDATED', updated);
         res.send(updated);
       }
     } catch ({ name, message }) {
@@ -90,7 +89,6 @@ routine_activitiesRouter.delete(
         });
       } else {
         const deleted = await destroyRoutineActivity(routineActivityId);
-        console.log('DELETED: ', deleted);
         res.send(deleted);
       }
     } catch ({ name, message }) {
@@ -98,26 +96,5 @@ routine_activitiesRouter.delete(
     }
   }
 );
-
-// let newRoutineActivityData = {
-//     routineId: 3,
-//     activityId: 8,
-//     count: 25,
-//     duration: 200,
-//   };
-
-// describe('PATCH /routine_activities/:routineActivityId (**)', () => {
-//     it('Updates the count or duration on the routine activity', async () => {
-//       const { data: respondedRoutineActivity } = await axios.patch(
-//         `${API_URL}/api/routine_activities/${routineActivityToCreateAndUpdate.id}`,
-//         newRoutineActivityData,
-//         { headers: { Authorization: `Bearer ${token}` } }
-//       );
-//       expect(respondedRoutineActivity.count).toEqual(
-//         newRoutineActivityData.count
-//       );
-//       expect(respondedRoutineActivity.duration).toEqual(
-//         newRoutineActivityData.duration
-//       );
 
 module.exports = routine_activitiesRouter;

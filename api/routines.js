@@ -62,7 +62,6 @@ routinesRouter.post('/:routineId/activities', async (req, res, next) => {
         count,
         duration,
       });
-      console.log('ADDED', added);
       res.send(added);
     }
   } catch ({ name, message }) {
@@ -94,7 +93,6 @@ routinesRouter.post('/', async (req, res, next) => {
           name,
           goal,
         });
-        console.log('NEWROUTINE', newRoutine);
         res.send(newRoutine);
       }
     } catch ({ name, message }) {
