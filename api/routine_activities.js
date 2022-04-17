@@ -43,14 +43,12 @@ routine_activitiesRouter.use('/', (req, res, next) => {
 routine_activitiesRouter.patch(
   '/:routineActivityId',
   async (req, res, next) => {
-    const routineActivityId = req.params.routineActivityId;
+    const id = req.params.routineActivityId;
     const { count, duration } = req.body;
     let creatorId = req.user.id;
 
     try {
-      const { routineId } = await getRoutineByRoutineActivityId(
-        routineActivityId
-      );
+      const { routineId } = await getRoutineByRoutineActivityId(id);
       const targetedRoutine = await getRoutineById(routineId);
       if (creatorId !== targetedRoutine.creatorId) {
         res.status(409);
@@ -60,7 +58,7 @@ routine_activitiesRouter.patch(
         });
       } else {
         const updated = await updateRoutineActivity({
-          routineActivityId,
+          id,
           count,
           duration,
         });

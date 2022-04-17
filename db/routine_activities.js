@@ -60,7 +60,7 @@ async function getRoutineByRoutineActivityId(id) {
   }
 }
 
-async function updateRoutineActivity({ routineActivityId, count, duration }) {
+async function updateRoutineActivity({ id, count, duration }) {
   try {
     const {
       rows: [activity],
@@ -72,7 +72,7 @@ async function updateRoutineActivity({ routineActivityId, count, duration }) {
     WHERE id=$1
     RETURNING *;
     `,
-      [routineActivityId, count, duration]
+      [id, count, duration]
     );
     return activity;
   } catch (error) {
