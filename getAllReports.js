@@ -11,7 +11,7 @@ const getAllReports = async () => {
             JOIN users ON "creatorId" = users.id;
         `);
 
-    console.log(attachActivitiesToRoutines(rows));
+    console.log(JSON.stringify(attachActivitiesToRoutines(rows), null, 2));
   } catch (error) {
     console.error(error);
   } finally {
@@ -23,11 +23,26 @@ const attachActivitiesToRoutines = (routines) => {
   const routinesById = {};
   routines.forEach((routine) => {
     if (!routinesById[routine.id]) {
-      routinesById[routine.id] = routine;
-      routine.activities = [];
+      routinesById[routine.id] = {
+        id: routine.id,
+        creatorId: routine.creatorId,
+        creatorName: routine.creatorName,
+        isPublic: routine.isPublic,
+        name: routine.name,
+        goal: routine.goal,
+        activities: [],
+      };
     }
+    routinesById[routine.id].activities.push({
+      id: routine.activityId,
+      name: routine.activityName,
+      description: routine.description,
+      duration: routine.duration,
+      count: routine.count,
+    });
   });
-  return routinesById;
+  //   return routinesById;
+  return Object.values(routinesById);
 };
 
 getAllReports();
